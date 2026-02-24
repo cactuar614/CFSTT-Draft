@@ -69,8 +69,6 @@
 
     // First row = headers; first column = participant names
     const headers = json[0];
-    // Detect layout: check if first column header looks like a name label
-    // We assume column 0 has participant names, columns 1+ are conferences
     const confHeaders = headers.slice(1).map((h) => String(h).trim()).filter(Boolean);
     const participants = [];
     const teams = {};
@@ -102,6 +100,18 @@
       alert("No conferences found in the header row.");
       return false;
     }
+
+    // Auto-generate numbered slots for columns with all-numeric values (e.g. Playoffs)
+    confHeaders.forEach((c) => {
+      const allNumeric = teams[c].length > 0 &&
+        teams[c].every((v) => /^\d+$/.test(v));
+      if (allNumeric) {
+        teams[c] = [];
+        for (let i = 1; i <= participants.length; i++) {
+          teams[c].push(`Pick #${i}`);
+        }
+      }
+    });
 
     state.participants = participants;
     state.conferences = confHeaders;
