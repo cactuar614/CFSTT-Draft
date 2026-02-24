@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>College Football Draft</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- SETUP SCREEN -->
+    <div id="setup-screen" class="screen active">
+      <h1>College Football Draft</h1>
+      <div class="setup-card">
+        <h2>Upload Draft File</h2>
+        <p class="instructions">
+          Upload an Excel file where <strong>rows are participants</strong> and
+          <strong>columns are conferences</strong>. Each cell should contain the
+          team names available in that conference.
+        </p>
+        <div class="upload-area" id="upload-area">
+          <div class="upload-icon">📁</div>
+          <p>Drag & drop your Excel file here</p>
+          <p class="upload-or">or</p>
+          <label class="upload-btn">
+            Choose File
+            <input type="file" id="file-input" accept=".xlsx,.xls,.csv" hidden>
+          </label>
+        </div>
+        <div id="file-preview" class="file-preview hidden">
+          <h3>File Loaded</h3>
+          <div id="preview-info"></div>
+        </div>
+      </div>
+
+      <div id="setup-options" class="setup-card hidden">
+        <h2>Draft Settings</h2>
+        <div class="participant-list">
+          <h3>Participants</h3>
+          <ul id="participant-list"></ul>
+        </div>
+        <div class="conference-list">
+          <h3>Conferences</h3>
+          <ul id="conference-list"></ul>
+        </div>
+        <button id="start-draft-btn" class="btn btn-primary btn-large">
+          Randomize & Start Draft
+        </button>
+      </div>
+    </div>
+
+    <!-- RANDOMIZATION REVEAL SCREEN -->
+    <div id="random-screen" class="screen">
+      <h1>Draft Order</h1>
+      <div class="random-results">
+        <div class="random-section">
+          <h2>Pick Order</h2>
+          <ol id="random-people-list" class="random-list"></ol>
+        </div>
+        <div class="random-section">
+          <h2>Conference Order</h2>
+          <ol id="random-conf-list" class="random-list"></ol>
+        </div>
+      </div>
+      <div class="order-explanation">
+        <h3>How It Works</h3>
+        <p>For each conference, the starting picker rotates. The person who picks
+          1st overall picks 1st in Conference #1, the person who picks 2nd overall
+          picks 1st in Conference #2, and so on. This evens the playing field.</p>
+      </div>
+      <button id="begin-draft-btn" class="btn btn-primary btn-large">
+        Begin Draft
+      </button>
+    </div>
+
+    <!-- DRAFT SCREEN -->
+    <div id="draft-screen" class="screen">
+      <div class="draft-header">
+        <h1 id="draft-conference-name">Conference Name</h1>
+        <div class="draft-progress">
+          <span id="draft-progress-text">Conference 1 of 10</span>
+          <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="draft-body">
+        <div class="pick-info">
+          <div class="current-picker">
+            <span class="label">Now Picking:</span>
+            <span id="current-picker-name" class="picker-name">Person Name</span>
+          </div>
+          <div class="pick-number">
+            <span class="label">Pick</span>
+            <span id="pick-number" class="number">#1</span>
+            <span class="label">of</span>
+            <span id="pick-total" class="number">8</span>
+          </div>
+        </div>
+
+        <div class="teams-grid" id="teams-grid"></div>
+      </div>
+
+      <div class="draft-sidebar">
+        <h3>Picks This Conference</h3>
+        <ul id="conference-picks" class="picks-list"></ul>
+      </div>
+    </div>
+
+    <!-- CONFERENCE TRANSITION SCREEN -->
+    <div id="transition-screen" class="screen">
+      <div class="transition-card">
+        <h2 id="transition-complete-text">Big Ten Complete!</h2>
+        <div id="transition-picks" class="transition-picks"></div>
+        <h2 id="transition-next-text">Next Up: ACC</h2>
+        <button id="next-conference-btn" class="btn btn-primary btn-large">
+          Start Next Conference
+        </button>
+      </div>
+    </div>
+
+    <!-- RESULTS SCREEN -->
+    <div id="results-screen" class="screen">
+      <h1>Draft Results</h1>
+      <div id="results-table-container"></div>
+      <div class="results-actions">
+        <button id="export-btn" class="btn btn-secondary">Export Results</button>
+        <button id="new-draft-btn" class="btn btn-primary">New Draft</button>
+      </div>
+    </div>
+
+    <!-- CONFIRMATION MODAL -->
+    <div id="confirm-modal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <h3 id="confirm-title">Confirm Pick</h3>
+        <p id="confirm-message">Are you sure?</p>
+        <div class="modal-actions">
+          <button id="confirm-cancel" class="btn btn-secondary">Cancel</button>
+          <button id="confirm-ok" class="btn btn-primary">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
