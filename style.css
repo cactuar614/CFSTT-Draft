@@ -5,19 +5,20 @@
 }
 
 :root {
-  --primary: #1a3a5c;
-  --primary-light: #2a5a8c;
-  --accent: #c8102e;
-  --accent-hover: #a00d24;
-  --gold: #cfb53b;
-  --bg: #0f1923;
-  --bg-card: #1a2733;
-  --bg-card-hover: #223344;
-  --text: #e8edf2;
-  --text-muted: #8899aa;
-  --border: #2a3a4a;
-  --success: #28a745;
-  --team-selected: #1a4d2e;
+  --primary: #e9ecf0;
+  --primary-light: #dce1e8;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --gold: #2563eb;
+  --bg: #f5f7fa;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f0f4f9;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #d1d9e6;
+  --error: #dc2626;
+  --success: #16a34a;
+  --team-selected: #dcfce7;
 }
 
 body {
@@ -109,6 +110,7 @@ h3 {
   border-radius: 12px;
   padding: 30px;
   margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .instructions {
@@ -155,11 +157,11 @@ h3 {
 }
 
 .name-input.error {
-  border-color: var(--accent);
+  border-color: var(--error);
 }
 
 .name-error {
-  color: var(--accent);
+  color: var(--error);
   text-align: center;
   margin-top: 12px;
   font-weight: 600;
@@ -207,8 +209,8 @@ h3 {
   justify-content: center;
   width: 28px;
   height: 28px;
-  background: var(--gold);
-  color: var(--bg);
+  background: var(--accent);
+  color: #fff;
   border-radius: 50%;
   font-weight: 700;
   font-size: 0.85rem;
@@ -308,13 +310,13 @@ h3 {
 }
 
 .board-filled {
-  color: var(--gold);
+  color: var(--accent);
   font-weight: 700;
-  background: rgba(207, 181, 59, 0.08);
+  background: rgba(37, 99, 235, 0.06);
 }
 
 .board-pending {
-  background: rgba(42, 90, 140, 0.2);
+  background: rgba(37, 99, 235, 0.08);
 }
 
 /* Draft Screen */
@@ -418,6 +420,7 @@ h3 {
   text-align: center;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   font-size: 1rem;
   font-weight: 600;
 }
@@ -555,11 +558,11 @@ h3 {
 }
 
 .results-table tr:nth-child(even) {
-  background: rgba(26, 58, 92, 0.3);
+  background: var(--bg);
 }
 
 .results-table tr:hover {
-  background: rgba(207, 181, 59, 0.05);
+  background: var(--primary-light);
 }
 
 .results-actions {
@@ -591,7 +594,7 @@ h3 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.35);
 }
 
 .modal-content {
