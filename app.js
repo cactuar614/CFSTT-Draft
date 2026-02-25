@@ -346,6 +346,30 @@
     showScreen("draft");
   });
 
+  // ─── Simulate Draft ────────────────────────────────────────────
+  $("simulate-draft-btn").addEventListener("click", () => {
+    // Auto-pick randomly for every conference and every person
+    state.confOrder.forEach((ci, confPos) => {
+      const conf = state.conferences[ci];
+      const rotated = getRotatedOrder(confPos);
+      const available = [...state.teams[conf]];
+
+      rotated.forEach((pi) => {
+        const person = state.participants[pi];
+        const idx = Math.floor(Math.random() * available.length);
+        const team = available.splice(idx, 1)[0];
+        state.picks[conf].push({ person, team });
+        state.takenTeams[conf].add(team);
+      });
+    });
+
+    state.currentConfIdx = state.confOrder.length;
+    state.currentPickIdx = 0;
+
+    showResults();
+    showScreen("results");
+  });
+
   // ─── Draft Rendering ────────────────────────────────────────────
   function renderDraft() {
     const confIdx = state.confOrder[state.currentConfIdx];
