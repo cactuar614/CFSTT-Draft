@@ -257,6 +257,66 @@ h3 {
   line-height: 1.6;
 }
 
+/* Draft Board */
+.draft-board-wrap {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.board-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 0.8rem;
+  table-layout: fixed;
+}
+
+.board-table th,
+.board-table td {
+  padding: 6px 4px;
+  text-align: center;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.board-table th {
+  background: var(--primary);
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.7rem;
+}
+
+.board-table th.board-active-conf {
+  color: var(--gold);
+  background: var(--primary-light);
+}
+
+.board-name-col {
+  text-align: left !important;
+  font-weight: 600;
+  color: var(--text);
+  width: 90px;
+  min-width: 90px;
+  padding-left: 8px !important;
+}
+
+.board-filled {
+  color: var(--gold);
+  font-weight: 700;
+  background: rgba(207, 181, 59, 0.08);
+}
+
+.board-pending {
+  background: rgba(42, 90, 140, 0.2);
+}
+
 /* Draft Screen */
 .draft-header {
   text-align: center;

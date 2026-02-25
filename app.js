@@ -101,6 +101,137 @@
     "Mountain West", "Big 12", "American", "Sun Belt", "Playoffs"
   ];
 
+  // ─── Team Abbreviations ──────────────────────────────────────────
+  const TEAM_ABBREV = {
+    // Big Ten
+    "Ohio State Buckeyes": "OSU", "Penn State Nittany Lions": "PSU",
+    "Oregon Ducks": "ORE", "Michigan Wolverines": "MICH",
+    "USC Trojans": "USC", "Washington Huskies": "WASH",
+    "Iowa Hawkeyes": "IOWA", "Wisconsin Badgers": "WIS",
+    "UCLA Bruins": "UCLA", "Nebraska Cornhuskers": "NEB",
+    "Illinois Fighting Illini": "ILL", "Indiana Hoosiers": "IND",
+    "Maryland Terrapins": "MD", "Michigan State Spartans": "MSU",
+    "Minnesota Golden Gophers": "MINN", "Northwestern Wildcats": "NW",
+    "Purdue Boilermakers": "PUR", "Rutgers Scarlet Knights": "RUT",
+    // MAC
+    "Miami (OH) RedHawks": "M-OH", "Toledo Rockets": "TOL",
+    "Bowling Green Falcons": "BGSU", "Ohio Bobcats": "OHIO",
+    "Northern Illinois Huskies": "NIU", "Central Michigan Chippewas": "CMU",
+    "Buffalo Bulls": "BUFF", "Western Michigan Broncos": "WMU",
+    "Ball State Cardinals": "BALL", "Eastern Michigan Eagles": "EMU",
+    "Akron Zips": "AKR", "Kent State Golden Flashes": "KENT",
+    "Massachusetts Minutemen": "MASS",
+    // ACC
+    "Florida State Seminoles": "FSU", "Clemson Tigers": "CLEM",
+    "Louisville Cardinals": "LOU", "Miami Hurricanes": "MIA",
+    "SMU Mustangs": "SMU", "NC State Wolfpack": "NCST",
+    "North Carolina Tar Heels": "UNC", "California Golden Bears": "CAL",
+    "Virginia Tech Hokies": "VT", "Duke Blue Devils": "DUKE",
+    "Boston College Eagles": "BC", "Georgia Tech Yellow Jackets": "GT",
+    "Pittsburgh Panthers": "PITT", "Stanford Cardinal": "STAN",
+    "Syracuse Orange": "SYR", "Virginia Cavaliers": "UVA",
+    "Wake Forest Demon Deacons": "WAKE",
+    // Conference USA
+    "Liberty Flames": "LIB", "Jacksonville State Gamecocks": "JVST",
+    "Middle Tennessee Blue Raiders": "MTSU", "Western Kentucky Hilltoppers": "WKU",
+    "UTEP Miners": "UTEP", "Louisiana Tech Bulldogs": "LATU",
+    "New Mexico State Aggies": "NMSU", "Sam Houston Bearkats": "SHSU",
+    "Kennesaw State Owls": "KNSU", "Florida International Panthers": "FIU",
+    "Delaware Blue Hens": "DEL", "Missouri State Bears": "MOST",
+    // SEC
+    "Georgia Bulldogs": "UGA", "Texas Longhorns": "TEX",
+    "Alabama Crimson Tide": "BAMA", "Oklahoma Sooners": "OU",
+    "Tennessee Volunteers": "TENN", "Missouri Tigers": "MIZZ",
+    "LSU Tigers": "LSU", "Texas A&M Aggies": "TAMU",
+    "Ole Miss Rebels": "MISS", "Auburn Tigers": "AUB",
+    "Arkansas Razorbacks": "ARK", "Florida Gators": "UF",
+    "Kentucky Wildcats": "UK", "Mississippi State Bulldogs": "MSST",
+    "South Carolina Gamecocks": "SCAR", "Vanderbilt Commodores": "VAND",
+    // Mountain West
+    "Boise State Broncos": "BSU", "Fresno State Bulldogs": "FRES",
+    "San Diego State Aztecs": "SDSU", "San Jos\u00e9 State Spartans": "SJSU",
+    "UNLV Rebels": "UNLV", "Air Force Falcons": "AFA",
+    "Wyoming Cowboys": "WYO", "Utah State Aggies": "USU",
+    "Colorado State Rams": "CSU", "Hawai\u2018i Rainbow Warriors": "HAW",
+    "Nevada Wolf Pack": "NEV", "New Mexico Lobos": "UNM",
+    // Big 12
+    "Kansas Jayhawks": "KU", "Kansas State Wildcats": "KSU",
+    "Arizona Wildcats": "ARIZ", "Oklahoma State Cowboys": "OKST",
+    "Utah Utes": "UTAH", "Texas Tech Red Raiders": "TTU",
+    "TCU Horned Frogs": "TCU", "UCF Knights": "UCF",
+    "West Virginia Mountaineers": "WVU", "Colorado Buffaloes": "COLO",
+    "Arizona State Sun Devils": "ASU", "BYU Cougars": "BYU",
+    "Baylor Bears": "BAY", "Cincinnati Bearcats": "CIN",
+    "Houston Cougars": "HOU", "Iowa State Cyclones": "ISU",
+    // American
+    "UTSA Roadrunners": "UTSA", "Memphis Tigers": "MEM",
+    "Tulane Green Wave": "TUL", "Florida Atlantic Owls": "FAU",
+    "South Florida Bulls": "USF", "East Carolina Pirates": "ECU",
+    "Rice Owls": "RICE", "UAB Blazers": "UAB",
+    "Tulsa Golden Hurricane": "TLSA", "North Texas Mean Green": "UNT",
+    "Army Black Knights": "ARMY", "Charlotte 49ers": "CHAR",
+    "Navy Midshipmen": "NAVY", "Temple Owls": "TEM",
+    // Sun Belt
+    "James Madison Dukes": "JMU", "App State Mountaineers": "APP",
+    "Troy Trojans": "TROY", "Texas State Bobcats": "TXST",
+    "South Alabama Jaguars": "USA", "Marshall Thundering Herd": "MRSH",
+    "Georgia State Panthers": "GAST", "Coastal Carolina Chanticleers": "CCU",
+    "Louisiana Ragin' Cajuns": "ULL", "Georgia Southern Eagles": "GASO",
+    "Old Dominion Monarchs": "ODU", "Southern Miss Golden Eagles": "SMIS",
+    "Arkansas State Red Wolves": "ARST", "UL Monroe Warhawks": "ULM",
+    // Playoffs
+    "Pick #1": "#1", "Pick #2": "#2", "Pick #3": "#3", "Pick #4": "#4",
+    "Pick #5": "#5", "Pick #6": "#6", "Pick #7": "#7", "Pick #8": "#8",
+    "Pick #9": "#9", "Pick #10": "#10",
+  };
+
+  function abbrev(teamName) {
+    return TEAM_ABBREV[teamName] || teamName;
+  }
+
+  // ─── Draft Board Rendering ─────────────────────────────────────
+  function renderDraftBoard() {
+    const board = $("draft-board");
+    // Conference column headers (only conferences drafted so far + current)
+    const visibleConfs = [];
+    for (let i = 0; i <= state.currentConfIdx && i < state.confOrder.length; i++) {
+      visibleConfs.push(state.confOrder[i]);
+    }
+
+    // Short conference labels
+    const confLabel = {
+      "Big Ten": "B1G", "MAC": "MAC", "ACC": "ACC",
+      "Conference USA": "CUSA", "SEC": "SEC", "Mountain West": "MWC",
+      "Big 12": "B12", "American": "AAC", "Sun Belt": "SBC", "Playoffs": "PLY"
+    };
+
+    let html = '<table class="board-table"><thead><tr><th class="board-name-col"></th>';
+    visibleConfs.forEach((ci) => {
+      const conf = state.conferences[ci];
+      const isCurrent = ci === state.confOrder[state.currentConfIdx];
+      html += `<th class="${isCurrent ? "board-active-conf" : ""}">${confLabel[conf] || conf}</th>`;
+    });
+    html += "</tr></thead><tbody>";
+
+    state.pickOrder.forEach((pi) => {
+      const person = state.participants[pi];
+      html += `<tr><td class="board-name-col">${person}</td>`;
+      visibleConfs.forEach((ci) => {
+        const conf = state.conferences[ci];
+        const pick = state.picks[conf].find((p) => p.person === person);
+        const isCurrent = ci === state.confOrder[state.currentConfIdx];
+        const cellClass = pick ? "board-filled" : (isCurrent ? "board-pending" : "");
+        const title = pick ? pick.team : "";
+        const display = pick ? abbrev(pick.team) : "";
+        html += `<td class="${cellClass}" title="${title}">${display}</td>`;
+      });
+      html += "</tr>";
+    });
+
+    html += "</tbody></table>";
+    board.innerHTML = html;
+  }
+
   // ─── Helpers ─────────────────────────────────────────────────────
   function showScreen(name) {
     Object.values(screens).forEach((s) => s.classList.remove("active"));
@@ -257,6 +388,9 @@
 
     // Sidebar: picks for this conference
     renderConferencePicks(confName, rotated);
+
+    // Draft board at top
+    renderDraftBoard();
   }
 
   function renderConferencePicks(confName, rotated) {
