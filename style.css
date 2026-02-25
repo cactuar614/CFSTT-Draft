@@ -117,82 +117,55 @@ h3 {
   line-height: 1.6;
 }
 
-.upload-area {
-  border: 2px dashed var(--border);
-  border-radius: 12px;
-  padding: 40px;
-  text-align: center;
-  transition: all 0.3s;
-  cursor: pointer;
+.name-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 20px;
 }
 
-.upload-area:hover,
-.upload-area.dragover {
-  border-color: var(--gold);
-  background: rgba(207, 181, 59, 0.05);
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.upload-icon {
-  font-size: 3rem;
-  margin-bottom: 10px;
+.name-row label {
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.95rem;
+  min-width: 28px;
+  text-align: right;
 }
 
-.upload-or {
-  color: var(--text-muted);
-  margin: 10px 0;
-  font-size: 0.9rem;
-}
-
-.upload-btn {
-  display: inline-block;
-  padding: 10px 24px;
+.name-input {
+  flex: 1;
+  padding: 10px 14px;
   background: var(--primary);
-  color: var(--text);
+  border: 1px solid var(--border);
   border-radius: 6px;
-  cursor: pointer;
+  color: var(--text);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.name-input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.name-input.error {
+  border-color: var(--accent);
+}
+
+.name-error {
+  color: var(--accent);
+  text-align: center;
+  margin-top: 12px;
   font-weight: 600;
-  transition: all 0.2s;
-}
-
-.upload-btn:hover {
-  background: var(--primary-light);
-}
-
-.file-preview {
-  margin-top: 20px;
-  padding: 20px;
-  background: rgba(40, 167, 69, 0.1);
-  border: 1px solid var(--success);
-  border-radius: 8px;
-}
-
-.file-preview h3 {
-  color: var(--success);
 }
 
 .hidden { display: none !important; }
-
-.participant-list,
-.conference-list {
-  margin-bottom: 20px;
-}
-
-.participant-list ul,
-.conference-list ul {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.participant-list li,
-.conference-list li {
-  background: var(--primary);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  border: 1px solid var(--border);
-}
 
 /* Randomization Screen */
 .random-results {

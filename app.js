@@ -3,10 +3,9 @@
 
   // ─── State ───────────────────────────────────────────────────────
   const state = {
-    // Raw data from Excel
-    participants: [],   // ["Matt", "Joe", ...]
-    conferences: [],    // ["Big Ten", "ACC", ...]
-    teams: {},          // { "Big Ten": ["Ohio State", "Michigan", ...], ... }
+    participants: [],
+    conferences: [],
+    teams: {},
 
     // Randomized order
     pickOrder: [],      // indices into participants
@@ -29,6 +28,25 @@
     transition: $("transition-screen"),
     results: $("results-screen"),
   };
+
+  // ─── Conference & Team Data (from CFSTT.xlsx) ────────────────────
+  const CONFERENCE_DATA = {
+    "B1G": ["OSU", "PSU", "Oregon", "Iowa", "SCUM", "USC", "Illinois", "Indiana", "Nebraska", "Washington"],
+    "MAC": ["Akron", "Toledo", "Buffalo", "Miami", "BGSU", "OU", "NIU", "Central Mich", "Eastern Mich", "Western Mich"],
+    "ACC": ["Duke", "Pitt", "Clemson", "THE U", "SMU", "Louisville", "Georgia Tech", "FSU", "UNC", "Virginia Tech"],
+    "Conference USA": ["Sam Houston", "Mid TN", "New Mexico State", "Liberty", "Western Kentucky", "LT", "Jack St", "UTEP", "Delaware", "FIU"],
+    "SEC": ["10RC", "Texas AM", "South Carolina", "Oklahoma", "LSU", "UGA", "Texas", "Alabama", "Florida", "Ole Miss"],
+    "Mountain West": ["Air Force", "Colorado State", "San Diego State", "Hawaii", "Utah State", "Boise State", "Wyoming", "UNLV", "San Jose State", "Fresno State"],
+    "Big 12": ["Texas Tech", "Iowa State", "Baylor", "Colorado", "TCU", "Kansas", "ASU", "Utah", "KSU", "BYU"],
+    "American": ["UTSA", "Navy", "Army", "North Texas", "Eastern Carolina", "Rice", "UAB", "Tulane", "Memphis", "South Florida"],
+    "Sun Belt": ["South Alabama", "Texas State", "Georgia Southern", "Troy", "ODU", "Southern Miss", "Appalachian State", "Coastal Carolina", "James Madison", "Louisiana"],
+    "Playoffs": ["Pick #1", "Pick #2", "Pick #3", "Pick #4", "Pick #5", "Pick #6", "Pick #7", "Pick #8", "Pick #9", "Pick #10"],
+  };
+
+  const CONFERENCE_ORDER = [
+    "B1G", "MAC", "ACC", "Conference USA", "SEC",
+    "Mountain West", "Big 12", "American", "Sun Belt", "Playoffs"
+  ];
 
   // ─── Helpers ─────────────────────────────────────────────────────
   function showScreen(name) {
@@ -56,119 +74,54 @@
     return [...state.pickOrder.slice(offset), ...state.pickOrder.slice(0, offset)];
   }
 
-  // ─── Excel Parsing ───────────────────────────────────────────────
-  function parseExcel(data) {
-    const workbook = XLSX.read(data, { type: "array" });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const json = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+  // ─── Read Names from Form ─────────────────────────────────────────
+  function readNamesFromForm() {
+    const inputs = document.querySelectorAll(".name-input");
+    const errorEl = $("name-error");
+    const names = [];
 
-    if (json.length < 2) {
-      alert("Excel file must have a header row and at least one data row.");
-      return false;
-    }
+    inputs.forEach((input) => input.classList.remove("error"));
+    errorEl.classList.add("hidden");
 
-    // First row = headers; first column = participant names
-    const headers = json[0];
-    const confHeaders = headers.slice(1).map((h) => String(h).trim()).filter(Boolean);
-    const participants = [];
-    const teams = {};
-
-    confHeaders.forEach((c) => {
-      teams[c] = [];
+    let hasEmpty = false;
+    inputs.forEach((input) => {
+      const val = input.value.trim();
+      if (!val) {
+        input.classList.add("error");
+        hasEmpty = true;
+      }
+      names.push(val);
     });
 
-    for (let r = 1; r < json.length; r++) {
-      const row = json[r];
-      const name = String(row[0] || "").trim();
-      if (!name) continue;
-      participants.push(name);
-
-      for (let c = 0; c < confHeaders.length; c++) {
-        const val = String(row[c + 1] || "").trim();
-        if (val && !teams[confHeaders[c]].includes(val)) {
-          teams[confHeaders[c]].push(val);
-        }
-      }
+    if (hasEmpty) {
+      errorEl.textContent = "All 10 participant names are required.";
+      errorEl.classList.remove("hidden");
+      return null;
     }
 
-    if (participants.length === 0) {
-      alert("No participants found in the first column.");
-      return false;
+    const unique = new Set(names.map((n) => n.toLowerCase()));
+    if (unique.size !== names.length) {
+      errorEl.textContent = "Each participant must have a unique name.";
+      errorEl.classList.remove("hidden");
+      return null;
     }
 
-    if (confHeaders.length === 0) {
-      alert("No conferences found in the header row.");
-      return false;
-    }
-
-    // Auto-generate numbered slots for columns with all-numeric values (e.g. Playoffs)
-    confHeaders.forEach((c) => {
-      const allNumeric = teams[c].length > 0 &&
-        teams[c].every((v) => /^\d+$/.test(v));
-      if (allNumeric) {
-        teams[c] = [];
-        for (let i = 1; i <= participants.length; i++) {
-          teams[c].push(`Pick #${i}`);
-        }
-      }
-    });
-
-    state.participants = participants;
-    state.conferences = confHeaders;
-    state.teams = teams;
-
-    return true;
+    return names;
   }
-
-  function showPreview() {
-    $("file-preview").classList.remove("hidden");
-    $("preview-info").innerHTML =
-      `<p><strong>${state.participants.length}</strong> participants &bull; ` +
-      `<strong>${state.conferences.length}</strong> conferences</p>`;
-
-    $("setup-options").classList.remove("hidden");
-
-    const pList = $("participant-list");
-    pList.innerHTML = state.participants.map((p) => `<li>${p}</li>`).join("");
-
-    const cList = $("conference-list");
-    cList.innerHTML = state.conferences
-      .map((c) => `<li>${c} (${state.teams[c].length} teams)</li>`)
-      .join("");
-  }
-
-  // ─── File Upload ─────────────────────────────────────────────────
-  function handleFile(file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const data = new Uint8Array(e.target.result);
-      if (parseExcel(data)) {
-        showPreview();
-      }
-    };
-    reader.readAsArrayBuffer(file);
-  }
-
-  $("file-input").addEventListener("change", (e) => {
-    if (e.target.files.length > 0) handleFile(e.target.files[0]);
-  });
-
-  const uploadArea = $("upload-area");
-  uploadArea.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    uploadArea.classList.add("dragover");
-  });
-  uploadArea.addEventListener("dragleave", () => {
-    uploadArea.classList.remove("dragover");
-  });
-  uploadArea.addEventListener("drop", (e) => {
-    e.preventDefault();
-    uploadArea.classList.remove("dragover");
-    if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
-  });
 
   // ─── Start Draft (Randomize) ────────────────────────────────────
   $("start-draft-btn").addEventListener("click", () => {
+    const names = readNamesFromForm();
+    if (!names) return;
+
+    // Load participants and hardcoded conference data
+    state.participants = names;
+    state.conferences = CONFERENCE_ORDER;
+    state.teams = {};
+    CONFERENCE_ORDER.forEach((c) => {
+      state.teams[c] = [...CONFERENCE_DATA[c]];
+    });
+
     // Randomize person order
     const peopleIndices = state.participants.map((_, i) => i);
     state.pickOrder = shuffle(peopleIndices);
@@ -425,10 +378,10 @@
     state.picks = {};
     state.takenTeams = {};
 
-    $("file-input").value = "";
-    $("file-preview").classList.add("hidden");
-    $("setup-options").classList.add("hidden");
-    $("upload-area").classList.remove("hidden");
+    document.querySelectorAll(".name-input").forEach((input) => {
+      input.classList.remove("error");
+    });
+    $("name-error").classList.add("hidden");
 
     showScreen("setup");
   });

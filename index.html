@@ -12,39 +12,26 @@
     <div id="setup-screen" class="screen active">
       <h1>College Football Draft</h1>
       <div class="setup-card">
-        <h2>Upload Draft File</h2>
+        <h2>Enter Participants</h2>
         <p class="instructions">
-          Upload an Excel file where <strong>rows are participants</strong> and
-          <strong>columns are conferences</strong>. Each cell should contain the
-          team names available in that conference.
+          Enter the names of all 10 draft participants below, then hit
+          <strong>Randomize &amp; Start Draft</strong>.
         </p>
-        <div class="upload-area" id="upload-area">
-          <div class="upload-icon">📁</div>
-          <p>Drag & drop your Excel file here</p>
-          <p class="upload-or">or</p>
-          <label class="upload-btn">
-            Choose File
-            <input type="file" id="file-input" accept=".xlsx,.xls,.csv" hidden>
-          </label>
+        <div class="name-form" id="name-form">
+          <div class="name-row"><label>1.</label><input type="text" class="name-input" value="Wakeland"></div>
+          <div class="name-row"><label>2.</label><input type="text" class="name-input" value="Bryant"></div>
+          <div class="name-row"><label>3.</label><input type="text" class="name-input" value="Lanning"></div>
+          <div class="name-row"><label>4.</label><input type="text" class="name-input" value="Gordon"></div>
+          <div class="name-row"><label>5.</label><input type="text" class="name-input" value="Hartman"></div>
+          <div class="name-row"><label>6.</label><input type="text" class="name-input" value="Kaleb"></div>
+          <div class="name-row"><label>7.</label><input type="text" class="name-input" value="Nick"></div>
+          <div class="name-row"><label>8.</label><input type="text" class="name-input" value="Hood"></div>
+          <div class="name-row"><label>9.</label><input type="text" class="name-input" value="Mike"></div>
+          <div class="name-row"><label>10.</label><input type="text" class="name-input" value="Huber"></div>
         </div>
-        <div id="file-preview" class="file-preview hidden">
-          <h3>File Loaded</h3>
-          <div id="preview-info"></div>
-        </div>
-      </div>
-
-      <div id="setup-options" class="setup-card hidden">
-        <h2>Draft Settings</h2>
-        <div class="participant-list">
-          <h3>Participants</h3>
-          <ul id="participant-list"></ul>
-        </div>
-        <div class="conference-list">
-          <h3>Conferences</h3>
-          <ul id="conference-list"></ul>
-        </div>
+        <div id="name-error" class="name-error hidden"></div>
         <button id="start-draft-btn" class="btn btn-primary btn-large">
-          Randomize & Start Draft
+          Randomize &amp; Start Draft
         </button>
       </div>
     </div>
