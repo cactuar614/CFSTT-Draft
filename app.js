@@ -31,20 +31,73 @@
 
   // ─── Conference & Team Data (from CFSTT.xlsx) ────────────────────
   const CONFERENCE_DATA = {
-    "B1G": ["OSU", "PSU", "Oregon", "Iowa", "SCUM", "USC", "Illinois", "Indiana", "Nebraska", "Washington"],
-    "MAC": ["Akron", "Toledo", "Buffalo", "Miami", "BGSU", "OU", "NIU", "Central Mich", "Eastern Mich", "Western Mich"],
-    "ACC": ["Duke", "Pitt", "Clemson", "THE U", "SMU", "Louisville", "Georgia Tech", "FSU", "UNC", "Virginia Tech"],
-    "Conference USA": ["Sam Houston", "Mid TN", "New Mexico State", "Liberty", "Western Kentucky", "LT", "Jack St", "UTEP", "Delaware", "FIU"],
-    "SEC": ["10RC", "Texas AM", "South Carolina", "Oklahoma", "LSU", "UGA", "Texas", "Alabama", "Florida", "Ole Miss"],
-    "Mountain West": ["Air Force", "Colorado State", "San Diego State", "Hawaii", "Utah State", "Boise State", "Wyoming", "UNLV", "San Jose State", "Fresno State"],
-    "Big 12": ["Texas Tech", "Iowa State", "Baylor", "Colorado", "TCU", "Kansas", "ASU", "Utah", "KSU", "BYU"],
-    "American": ["UTSA", "Navy", "Army", "North Texas", "Eastern Carolina", "Rice", "UAB", "Tulane", "Memphis", "South Florida"],
-    "Sun Belt": ["South Alabama", "Texas State", "Georgia Southern", "Troy", "ODU", "Southern Miss", "Appalachian State", "Coastal Carolina", "James Madison", "Louisiana"],
-    "Playoffs": ["Pick #1", "Pick #2", "Pick #3", "Pick #4", "Pick #5", "Pick #6", "Pick #7", "Pick #8", "Pick #9", "Pick #10"],
+    "Big Ten": [
+      "Ohio State Buckeyes", "Penn State Nittany Lions", "Oregon Ducks", "Michigan Wolverines",
+      "USC Trojans", "Washington Huskies", "Iowa Hawkeyes", "Wisconsin Badgers",
+      "UCLA Bruins", "Nebraska Cornhuskers", "Illinois Fighting Illini", "Indiana Hoosiers",
+      "Maryland Terrapins", "Michigan State Spartans", "Minnesota Golden Gophers",
+      "Northwestern Wildcats", "Purdue Boilermakers", "Rutgers Scarlet Knights"
+    ],
+    "MAC": [
+      "Miami (OH) RedHawks", "Toledo Rockets", "Bowling Green Falcons", "Ohio Bobcats",
+      "Northern Illinois Huskies", "Central Michigan Chippewas", "Buffalo Bulls",
+      "Western Michigan Broncos", "Ball State Cardinals", "Eastern Michigan Eagles",
+      "Akron Zips", "Kent State Golden Flashes", "Massachusetts Minutemen"
+    ],
+    "ACC": [
+      "Florida State Seminoles", "Clemson Tigers", "Louisville Cardinals", "Miami Hurricanes",
+      "SMU Mustangs", "NC State Wolfpack", "North Carolina Tar Heels",
+      "California Golden Bears", "Virginia Tech Hokies", "Duke Blue Devils",
+      "Boston College Eagles", "Georgia Tech Yellow Jackets", "Pittsburgh Panthers",
+      "Stanford Cardinal", "Syracuse Orange", "Virginia Cavaliers", "Wake Forest Demon Deacons"
+    ],
+    "Conference USA": [
+      "Liberty Flames", "Jacksonville State Gamecocks", "Middle Tennessee Blue Raiders",
+      "Western Kentucky Hilltoppers", "UTEP Miners", "Louisiana Tech Bulldogs",
+      "New Mexico State Aggies", "Sam Houston Bearkats", "Kennesaw State Owls",
+      "Florida International Panthers", "Delaware Blue Hens", "Missouri State Bears"
+    ],
+    "SEC": [
+      "Georgia Bulldogs", "Texas Longhorns", "Alabama Crimson Tide", "Oklahoma Sooners",
+      "Tennessee Volunteers", "Missouri Tigers", "LSU Tigers", "Texas A&M Aggies",
+      "Ole Miss Rebels", "Auburn Tigers", "Arkansas Razorbacks", "Florida Gators",
+      "Kentucky Wildcats", "Mississippi State Bulldogs", "South Carolina Gamecocks",
+      "Vanderbilt Commodores"
+    ],
+    "Mountain West": [
+      "Boise State Broncos", "Fresno State Bulldogs", "San Diego State Aztecs",
+      "San Jos\u00e9 State Spartans", "UNLV Rebels", "Air Force Falcons",
+      "Wyoming Cowboys", "Utah State Aggies", "Colorado State Rams",
+      "Hawai\u2018i Rainbow Warriors", "Nevada Wolf Pack", "New Mexico Lobos"
+    ],
+    "Big 12": [
+      "Kansas Jayhawks", "Kansas State Wildcats", "Arizona Wildcats",
+      "Oklahoma State Cowboys", "Utah Utes", "Texas Tech Red Raiders",
+      "TCU Horned Frogs", "UCF Knights", "West Virginia Mountaineers",
+      "Colorado Buffaloes", "Arizona State Sun Devils", "BYU Cougars",
+      "Baylor Bears", "Cincinnati Bearcats", "Houston Cougars", "Iowa State Cyclones"
+    ],
+    "American": [
+      "UTSA Roadrunners", "Memphis Tigers", "Tulane Green Wave",
+      "Florida Atlantic Owls", "South Florida Bulls", "East Carolina Pirates",
+      "Rice Owls", "UAB Blazers", "Tulsa Golden Hurricane", "North Texas Mean Green",
+      "Army Black Knights", "Charlotte 49ers", "Navy Midshipmen", "Temple Owls"
+    ],
+    "Sun Belt": [
+      "James Madison Dukes", "App State Mountaineers", "Troy Trojans",
+      "Texas State Bobcats", "South Alabama Jaguars", "Marshall Thundering Herd",
+      "Georgia State Panthers", "Coastal Carolina Chanticleers",
+      "Louisiana Ragin' Cajuns", "Georgia Southern Eagles", "Old Dominion Monarchs",
+      "Southern Miss Golden Eagles", "Arkansas State Red Wolves", "UL Monroe Warhawks"
+    ],
+    "Playoffs": [
+      "Pick #1", "Pick #2", "Pick #3", "Pick #4", "Pick #5",
+      "Pick #6", "Pick #7", "Pick #8", "Pick #9", "Pick #10"
+    ],
   };
 
   const CONFERENCE_ORDER = [
-    "B1G", "MAC", "ACC", "Conference USA", "SEC",
+    "Big Ten", "MAC", "ACC", "Conference USA", "SEC",
     "Mountain West", "Big 12", "American", "Sun Belt", "Playoffs"
   ];
 
@@ -126,8 +179,8 @@
     const peopleIndices = state.participants.map((_, i) => i);
     state.pickOrder = shuffle(peopleIndices);
 
-    // Randomize conference order, but B1G is always first
-    const b1gIdx = state.conferences.indexOf("B1G");
+    // Randomize conference order, but Big Ten is always first
+    const b1gIdx = state.conferences.indexOf("Big Ten");
     const otherConfIndices = state.conferences
       .map((_, i) => i)
       .filter((i) => i !== b1gIdx);
