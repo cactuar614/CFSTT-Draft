@@ -347,28 +347,32 @@
   });
 
   // ─── Simulate Draft ────────────────────────────────────────────
-  $("simulate-draft-btn").addEventListener("click", () => {
+  function simulateDraft() {
     // Auto-pick randomly for every conference and every person
-    state.confOrder.forEach((ci, confPos) => {
+    for (let confPos = 0; confPos < state.confOrder.length; confPos++) {
+      const ci = state.confOrder[confPos];
       const conf = state.conferences[ci];
       const rotated = getRotatedOrder(confPos);
-      const available = [...state.teams[conf]];
+      const available = state.teams[conf].filter((t) => !state.takenTeams[conf].has(t));
 
-      rotated.forEach((pi) => {
+      for (let p = 0; p < rotated.length; p++) {
+        const pi = rotated[p];
         const person = state.participants[pi];
         const idx = Math.floor(Math.random() * available.length);
         const team = available.splice(idx, 1)[0];
         state.picks[conf].push({ person, team });
         state.takenTeams[conf].add(team);
-      });
-    });
+      }
+    }
 
     state.currentConfIdx = state.confOrder.length;
     state.currentPickIdx = 0;
 
     showResults();
     showScreen("results");
-  });
+  }
+
+  document.getElementById("simulate-draft-btn").addEventListener("click", simulateDraft);
 
   // ─── Draft Rendering ────────────────────────────────────────────
   function renderDraft() {
