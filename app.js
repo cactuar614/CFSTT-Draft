@@ -126,9 +126,12 @@
     const peopleIndices = state.participants.map((_, i) => i);
     state.pickOrder = shuffle(peopleIndices);
 
-    // Randomize conference order
-    const confIndices = state.conferences.map((_, i) => i);
-    state.confOrder = shuffle(confIndices);
+    // Randomize conference order, but B1G is always first
+    const b1gIdx = state.conferences.indexOf("B1G");
+    const otherConfIndices = state.conferences
+      .map((_, i) => i)
+      .filter((i) => i !== b1gIdx);
+    state.confOrder = [b1gIdx, ...shuffle(otherConfIndices)];
 
     // Initialize picks and taken tracking
     state.conferences.forEach((c) => {
