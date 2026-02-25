@@ -310,12 +310,13 @@
     const peopleIndices = state.participants.map((_, i) => i);
     state.pickOrder = shuffle(peopleIndices);
 
-    // Randomize conference order, but Big Ten is always first
+    // Randomize conference order: Big Ten always first, Playoffs always last
     const b1gIdx = state.conferences.indexOf("Big Ten");
+    const playoffsIdx = state.conferences.indexOf("Playoffs");
     const otherConfIndices = state.conferences
       .map((_, i) => i)
-      .filter((i) => i !== b1gIdx);
-    state.confOrder = [b1gIdx, ...shuffle(otherConfIndices)];
+      .filter((i) => i !== b1gIdx && i !== playoffsIdx);
+    state.confOrder = [b1gIdx, ...shuffle(otherConfIndices), playoffsIdx];
 
     // Initialize picks and taken tracking
     state.conferences.forEach((c) => {
@@ -520,11 +521,10 @@
   }
 
   // ─── Results ─────────────────────────────────────────────────────
-  function showResults() {
-    const container = $("results-table-container");
-
-    // Build table: rows = participants in pick order, cols = conferences in conf order
-    let html = '<table class="results-table"><thead><tr><th>Pick #</th><th>Participant</th>';
+  function buildResultsHTML(useAbbrev) {
+    const label = useAbbrev ? "Abbreviated" : "Full Names";
+    let html = `<h2 class="results-section-title">${label}</h2>`;
+    html += '<table class="results-table"><thead><tr><th>Pick #</th><th>Participant</th>';
     state.confOrder.forEach((ci) => {
       html += `<th>${state.conferences[ci]}</th>`;
     });
@@ -536,17 +536,24 @@
       state.confOrder.forEach((ci) => {
         const conf = state.conferences[ci];
         const pick = state.picks[conf].find((p) => p.person === person);
-        html += `<td>${pick ? pick.team : "-"}</td>`;
+        const display = pick ? (useAbbrev ? abbrev(pick.team) : pick.team) : "-";
+        const title = pick && useAbbrev ? pick.team : "";
+        html += `<td${title ? ` title="${title}"` : ""}>${display}</td>`;
       });
       html += "</tr>";
     });
 
     html += "</tbody></table>";
-    container.innerHTML = html;
+    return html;
+  }
+
+  function showResults() {
+    const container = $("results-table-container");
+    container.innerHTML = buildResultsHTML(true) + buildResultsHTML(false);
   }
 
   // ─── Export ──────────────────────────────────────────────────────
-  $("export-btn").addEventListener("click", () => {
+  function buildExportRows(useAbbrev) {
     const rows = [];
     const header = ["Pick #", "Participant"];
     state.confOrder.forEach((ci) => header.push(state.conferences[ci]));
@@ -558,31 +565,20 @@
       state.confOrder.forEach((ci) => {
         const conf = state.conferences[ci];
         const pick = state.picks[conf].find((p) => p.person === person);
-        row.push(pick ? pick.team : "");
+        row.push(pick ? (useAbbrev ? abbrev(pick.team) : pick.team) : "");
       });
       rows.push(row);
     });
 
-    const ws = XLSX.utils.aoa_to_sheet(rows);
+    return rows;
+  }
+
+  $("export-btn").addEventListener("click", () => {
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Draft Results");
-    XLSX.utils.book_append_sheet(wb, buildPickOrderSheet(), "Pick Details");
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(buildExportRows(true)), "Abbreviated");
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(buildExportRows(false)), "Full Names");
     XLSX.writeFile(wb, "draft_results.xlsx");
   });
-
-  function buildPickOrderSheet() {
-    const rows = [["Conference", "Pick #", "Participant", "Team"]];
-    state.confOrder.forEach((ci, confPos) => {
-      const conf = state.conferences[ci];
-      const rotated = getRotatedOrder(confPos);
-      rotated.forEach((pi, pickIdx) => {
-        const person = state.participants[pi];
-        const pick = state.picks[conf].find((p) => p.person === person);
-        rows.push([conf, pickIdx + 1, person, pick ? pick.team : ""]);
-      });
-    });
-    return XLSX.utils.aoa_to_sheet(rows);
-  }
 
   // ─── New Draft ───────────────────────────────────────────────────
   $("new-draft-btn").addEventListener("click", () => {

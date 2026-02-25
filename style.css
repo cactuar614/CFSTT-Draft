@@ -576,6 +576,16 @@ h3 {
   background: var(--primary-light);
 }
 
+.results-section-title {
+  font-size: 1.1rem;
+  color: var(--text);
+  margin: 30px 0 12px;
+}
+
+.results-section-title:first-child {
+  margin-top: 0;
+}
+
 .results-actions {
   display: flex;
   justify-content: center;
